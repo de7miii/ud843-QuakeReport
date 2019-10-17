@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?listPreferredItemHeight"
+    android:foreground="?selectableItemBackground">
+
+    <TextView
+        android:id="@+id/text_mag"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/magnitude_circle"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-condensed-medium"
+        tools:text="5.5"/>
+   <LinearLayout
+       android:layout_width="0dp"
+       android:layout_weight="1"
+       android:layout_height="match_parent"
+       android:layout_marginStart="16dp"
+       android:gravity="center_vertical"
+       android:orientation="vertical">
+       <TextView
+           android:id="@+id/text_place_top"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:ellipsize="end"
+           android:fontFamily="sans-serif-medium"
+           android:maxLines="1"
+           android:textAllCaps="true"
+           android:textColor="@color/textColorEarthquakeDetails"
+           android:textSize="12sp"
+           tools:text="78KM SSW of"/>
+       <TextView
+           android:id="@+id/text_place_bottom"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:ellipsize="end"
+           android:maxLines="2"
+           android:textColor="@color/textColorEarthquakeLocation"
+           android:textSize="16sp"
+           tools:text="Long placeholder location that should wrap to more than 2 lines of text"/>
+   </LinearLayout>
+    <TextView
+        android:id="@+id/text_time"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="end"
+        android:textColor="@color/textColorEarthquakeDetails"
+        android:textSize="12sp"
+        tools:text="Jun 6, 2019"/>
+
+
+</LinearLayout>
