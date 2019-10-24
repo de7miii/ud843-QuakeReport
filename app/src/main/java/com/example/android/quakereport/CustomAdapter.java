@@ -11,14 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
     private final String TAG = CustomAdapter.class.getSimpleName();
 
     private Context mContext;
 
-    private ArrayList<Earthquake> mEarthquakes;
+    private List<Earthquake> mEarthquakes;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -83,7 +83,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         }
     }
 
-    void updateEarthquakes(ArrayList<Earthquake> earthquakes) {
+    void updateEarthquakes(List<Earthquake> earthquakes) {
         mEarthquakes = earthquakes;
     }
 
