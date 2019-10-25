@@ -155,7 +155,7 @@ public final class QueryUtils {
     // helper method to format the time from UNIX time to locale format.
     private static String formatDate(long timeInMilliseconds){
         Date date = new Date(timeInMilliseconds);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM DD, yyyy \nh:mm:ss a", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy \nh:mm:ss a", Locale.getDefault());
         return dateFormat.format(date);
     }
 

@@ -17,11 +17,14 @@ package com.example.android.quakereport;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,7 +57,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     private ArrayList<Earthquake> mEarthquakes;
     CustomAdapter adapter;
 
-    private final String USGS_API_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+    private final String USGS_API_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,22 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_settings){
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onItemClicked(int position) {
         Earthquake earthquake = mEarthquakes.get(position);
         Uri webpage = Uri.parse(earthquake.getWebUrl());
@@ -96,18 +116,38 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     @NonNull
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, @Nullable Bundle args) {
-        return new EarthquakeAsyncLoader(this, USGS_API_URL);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String minMagnitude = sharedPref.getString(
+                getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default));
+        String orderBy = sharedPref.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default));
+        Uri baseUri = Uri.parse(USGS_API_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendQueryParameter("format", "geojson");
+        uriBuilder.appendQueryParameter("eventtype", "earthquake");
+        uriBuilder.appendQueryParameter("orderby", orderBy);
+        uriBuilder.appendQueryParameter("minmag", minMagnitude);
+        uriBuilder.appendQueryParameter("limit", "10");
+        return new EarthquakeAsyncLoader(this, uriBuilder.toString());
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Earthquake>> loader, List<Earthquake> data) {
         progressBar.setVisibility(View.INVISIBLE);
         if (data != null){
-            emptyText.setVisibility(View.INVISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            mEarthquakes = (ArrayList<Earthquake>) data;
-            adapter.updateEarthquakes(data);
-            adapter.notifyDataSetChanged();
+            if (!data.isEmpty()) {
+                emptyText.setVisibility(View.INVISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
+                mEarthquakes = (ArrayList<Earthquake>) data;
+                adapter.updateEarthquakes(data);
+                adapter.notifyDataSetChanged();
+            }else{
+                recyclerView.setVisibility(View.INVISIBLE);
+                emptyText.setText("No earthquake found");
+                emptyText.setVisibility(View.VISIBLE);
+            }
         }else {
             recyclerView.setVisibility(View.INVISIBLE);
             emptyText.setVisibility(View.VISIBLE);
